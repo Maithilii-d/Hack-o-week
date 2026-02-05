@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maithili Dafale | Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-light: linear-gradient(120deg, #e8f2ff, #f4f9ff);
+            --bg-dark: linear-gradient(120deg, #0f172a, #1e293b);
+            --card-light: rgba(255, 255, 255, 0.85);
+            --card-dark: rgba(30, 41, 59, 0.85);
+            --text-light: #2c3e50;
+            --text-dark: #e5e7eb;
+            --accent: #7fb3ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: 0.4s ease;
+        }
+
+        body.dark {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 30px;
+            z-index: 1000;
+        }
+
+        body.dark nav {
+            background: rgba(15,23,42,0.8);
+        }
+
+        nav a {
+            margin: 0 12px;
+            text-decoration: none;
+            font-size: 14px;
+            color: inherit;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a.active {
+            color: var(--accent);
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            bottom: -6px;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .toggle {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 120px 20px 40px;
+        }
+
+        .card {
+            background: var(--card-light);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            transition: 0.4s ease, transform 0.3s;
+        }
+
+        body.dark .card {
+            background: var(--card-dark);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Scroll animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Standard black bullets */
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        ul li {
+            position: static;
+            padding-left: 0;
+            margin-bottom: 12px;
+            font-size: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        ul li.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Profile */
+        .profile {
+            text-align: center;
+        }
+
+        .photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: auto;
+            box-shadow: 0 0 20px rgba(127,179,255,0.4);
+            overflow: hidden; /* ensures image fits circle */
+            transition: box-shadow 0.4s ease;
+        }
+
+        .photo:hover {
+            box-shadow: 0 0 25px rgba(127,179,255,0.6);
+        }
+
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease; /* smooth zoom */
+        }
+
+        .photo img:hover {
+            transform: scale(1.1); /* soft zoom on hover */
+        }
+
+        h1 {
+            margin-top: 15px;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+
+        h1:hover {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .contact {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .contact a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tag {
+            background: #e1efff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #3f6fa5;
+            width: fit-content;
+        }
+
+        body.dark .tag {
+            background: #334155;
+            color: #c7d2fe;
+        }
+
+        /* Project Cards */
+        .project-card {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        body.dark .project-card {
+            background: #1e293b;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .project-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .project-tech {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div><strong>Maithili</strong></div>
+        <div>
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#education" class="nav-link">Education</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#achievements" class="nav-link">Achievements</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#certifications" class="nav-link">Certifications</a>
+        </div>
+        <div class="toggle" onclick="toggleTheme()">🌙</div>
+    </nav>
+
+    <div class="container">
+
+        <section id="home" class="card profile reveal">
+               
+		<div class="photo">
+    		<img src="C:\Users\shara\OneDrive\Documents\newphoto.jpg" alt="Maithili Dafale" class="profile-img">
+		</div>
+
+            <h1>MAITHILI DAFALE</h1>
+            <p class="subtitle">BTech Computer Science Engineering Student</p>
+
+            <div class="contact">
+                <p>📍 Nagpur, Maharashtra, India</p>
+                <p>
+                    📧 <a href="mailto:maithilidafale@gmail.com">maithilidafale@gmail.com</a> |
+                    <a href="https://www.linkedin.com/in/Maithili_Dafale640877376" target="_blank">LinkedIn</a> |
+                    <a href="https://github.com/Maithilii-d" target="_blank">GitHub</a>
+                </p>
+            </div>
+        </section>
+
+        <section id="education" class="card reveal">
+            <h2>🎓 Education</h2>
+            <ul>
+                <li>BTech in Computer Science Engineering</li>
+                <li>Symbiosis Institute of Technology</li>
+                <li>1st Year (2025 – 2029)</li>
+            </ul>
+        </section>
+
+        <section id="skills" class="card reveal">
+            <h2>🛠️ Skills</h2>
+            <h4>Programming Languages</h4>
+            <div class="tag-container">
+                <div class="tag">HTML</div>
+                <div class="tag">CSS</div>
+                <div class="tag">C Programming</div>
+            </div>
+
+            <br>
+            <h4>Soft Skills</h4>
+            <div class="tag-container">
+                <div class="tag">Communication</div>
+                <div class="tag">Problem Solving</div>
+                <div class="tag">Teamwork</div>
+            </div>
+        </section>
+
+        <section id="achievements" class="card reveal">
+            <h2>🏆 Achievements</h2>
+            <ul>
+                <li>Built first portfolio website</li>
+                <li>Completed beginner level C Programming course</li>
+            </ul>
+        </section>
+
+        <section id="projects" class="card reveal">
+            <h2>💻 Projects</h2>
+            <div class="project-card">
+                <div class="project-name">Personal Portfolio Website</div>
+                <div class="project-tech">HTML, CSS</div>
+            </div>
+            <div class="project-card">
+                <div class="project-name">Beginner Web Page Designs</div>
+                <div class="project-tech">HTML, CSS</div>
+            </div>
+        </section>
+
+        <section id="certifications" class="card reveal">
+            <h2>📜 Certifications</h2>
+            <ul>
+                <li>Programming in C – Infosys</li>
+                <li>Artificial Intelligence Basic – Secure Cypher Solutions</li>
+                <li>Environmental Science – NPTEL</li>
+            </ul>
+        </section>
+
+        <footer class="reveal">
+            © 2026 Maithili Dafale • Minimal • Pastel • Modern
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+        }
+
+        // Scroll reveal for sections
+        const reveals = document.querySelectorAll('.reveal');
+        function revealOnScroll() {
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 120) {
+                    el.classList.add("active");
+                }
+            });
+        }
+        window.addEventListener("scroll", revealOnScroll);
+        revealOnScroll();
+
+        // Navbar active link on scroll
+        const sections = document.querySelectorAll("section");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (pageYOffset >= sectionTop) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === "#" + current) {
+                    link.classList.add("active");
+                }
+            });
+        });
+
+        // Staggered reveal for list items
+        const listItems = document.querySelectorAll('ul li');
+        function staggerReveal() {
+            listItems.forEach((li, index) => {
+                const liTop = li.getBoundingClientRect().top;
+                if(liTop < window.innerHeight - 100) {
+                    setTimeout(() => li.classList.add('show'), index * 150);
+                }
+            });
+        }
+        window.addEventListener('scroll', staggerReveal);
+        staggerReveal();
+    </script>
+
+</body>
+</html>
