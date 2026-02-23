@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Mart</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+
+/* 🎨 PASTEL BLUE THEME */
+body{background:#eef6ff;color:#333;transition:.3s}
+body.dark{background:#0f172a;color:#e5e7eb}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,#7dd3fc,#93c5fd);
+  color:#0f172a;
+  padding:30px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+}
+body.dark header{background:linear-gradient(135deg,#1e293b,#0f172a);color:#e5e7eb}
+.brand h1{font-size:2.2rem}
+.brand p{opacity:.9}
+
+.header-actions{display:flex;gap:10px;align-items:center}
+
+.login-btn,.theme-toggle{
+  background:white;
+  color:#0369a1;
+  padding:10px 16px;
+  border-radius:25px;
+  font-weight:600;
+  border:none;
+  cursor:pointer;
+}
+body.dark .login-btn,body.dark .theme-toggle{background:#334155;color:#e5e7eb}
+
+/* FLOATING CART */
+.cart-box{
+  background:white;
+  color:#0369a1;
+  padding:10px 18px;
+  border-radius:30px;
+  font-weight:600;
+  box-shadow:0 6px 18px rgba(0,0,0,0.2);
+  cursor:pointer;
+  position:fixed;
+  right:25px;
+  bottom:25px;
+  z-index:1200;
+  transition:.25s;
+}
+body.dark .cart-box{background:#334155;color:#e5e7eb}
+.cart-box:hover{transform:scale(1.05)}
+
+/* CART BADGE ANIMATION */
+.cart-box.bump{animation:bump .35s ease}
+@keyframes bump{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+/* STICKY CATEGORY BAR */
+.category-bar{
+  max-width:1200px;
+  margin:20px auto 0;
+  padding:10px 20px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  position:sticky;
+  top:0;
+  z-index:500;
+  background:#eef6ff;
+}
+body.dark .category-bar{background:#0f172a}
+
+.cat-btn{padding:6px 14px;border-radius:20px;border:1px solid #bae6fd;background:white;cursor:pointer;font-size:.9rem}
+.cat-btn.active{background:#38bdf8;color:white;border-color:#38bdf8}
+body.dark .cat-btn{background:#334155;color:#e5e7eb;border-color:#475569}
+
+/* SEARCH */
+.search-wrap{max-width:1200px;margin:20px auto 0;padding:0 20px}
+.search-wrap input{width:100%;padding:14px 18px;border-radius:30px;border:2px solid #bae6fd;outline:none;font-size:1rem}
+.search-wrap input:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,0.2)}
+body.dark .search-wrap input{background:#334155;color:#e5e7eb;border-color:#475569}
+
+/* GRID */
+.container{max-width:1200px;margin:30px auto 50px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:28px}
+
+.card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,0.12);transition:.35s}
+.card:hover{transform:translateY(-10px) scale(1.04);box-shadow:0 18px 40px rgba(0,0,0,0.2)}
+body.dark .card{background:#1e293b;color:#e5e7eb}
+.card img{width:100%;height:190px;object-fit:cover}
+.card-content{padding:18px;text-align:center}
+.card-content h3{color:#0369a1;margin-bottom:6px}
+.price{font-weight:700;color:#0284c7;margin-bottom:14px;font-size:1.1rem}
+
+.btn{background:linear-gradient(135deg,#38bdf8,#60a5fa);color:white;border:none;padding:9px 20px;border-radius:25px;cursor:pointer;font-weight:600}
+
+/* CART PANEL + OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);opacity:0;pointer-events:none;transition:.3s;z-index:900}
+.overlay.show{opacity:1;pointer-events:auto}
+
+.cart-panel{position:fixed;right:-360px;top:0;width:360px;height:100%;background:white;box-shadow:-5px 0 25px rgba(0,0,0,0.25);padding:20px;transition:.35s;z-index:999;overflow-y:auto}
+.cart-panel.open{right:0}
+body.dark .cart-panel{background:#1e293b;color:#e5e7eb}
+.cart-panel h2{color:#0284c7;margin-bottom:15px}
+
+.cart-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:.95rem}
+.qty-box{display:flex;align-items:center;gap:6px}
+.qty-box button{width:22px;height:22px;border:none;border-radius:5px;background:#e5e7eb;cursor:pointer;font-weight:bold}
+
+.checkout-btn{width:100%;margin-top:12px}
+.total{font-weight:700;margin-top:15px;color:#0284c7}
+.close-btn{float:right;cursor:pointer;font-weight:bold}
+
+footer{text-align:center;padding:18px;background:#dbeafe;color:#0369a1;font-weight:500}
+body.dark footer{background:#020617;color:#e5e7eb}
+
+/* LOGIN MODAL */
+.login-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:1300}
+.login-modal.show{display:flex}
+.login-box{background:white;padding:25px;border-radius:16px;width:90%;max-width:420px;text-align:center}
+.login-box input{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc}
+body.dark .login-box{background:#1e293b;color:#e5e7eb}
+
+/* CHECKOUT MODAL */
+.checkout-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:1300}
+.checkout-modal.show{display:flex}
+.checkout-box{background:white;padding:25px;border-radius:16px;width:90%;max-width:420px;text-align:center}
+.checkout-box input{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ccc}
+body.dark .checkout-box{background:#1e293b;color:#e5e7eb}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>Nova Mart</h1>
+    <p>Your Daily Dose of Stationery</p>
+  </div>
+  <div class="header-actions">
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    <button class="login-btn" onclick="loginUser()" id="loginBtn">Login</button>
+  </div>
+</header>
+
+<!-- FLOATING CART -->
+<div class="cart-box" onclick="toggleCart()" id="cartBox">
+  🛒 Cart: <span id="cartCount">0</span>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+
+<!-- CATEGORY BUTTONS -->
+<div class="category-bar">
+  <button class="cat-btn active" onclick="setCategory('All',this)">All</button>
+  <button class="cat-btn" onclick="setCategory('Books',this)">Notebooks</button>
+  <button class="cat-btn" onclick="setCategory('Art',this)">Arts</button>
+  <button class="cat-btn" onclick="setCategory('Writing',this)">Writing</button>
+</div>
+
+<div class="search-wrap">
+  <input type="text" id="searchInput" placeholder="Search stationery..." onkeyup="filterProducts()">
+</div>
+
+<div class="container" id="productContainer"></div>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+  <span class="close-btn" onclick="toggleCart()">✖</span>
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+  <div class="total">Total: <span id="cartTotal">₹0</span></div>
+  <button class="btn checkout-btn" onclick="checkout()">Checkout</button>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="checkout-modal" id="checkoutModal">
+  <div class="checkout-box">
+    <h3>Checkout Details</h3>
+    <input placeholder="Full Name">
+    <input placeholder="Address">
+    <input placeholder="Phone Number">
+    <button class="btn" onclick="placeOrder()">Place Order</button>
+  </div>
+</div>
+
+<footer>
+  © 2026 Nova Mart | Designed for Real Experience
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="login-modal" id="loginModal">
+  <div class="login-box">
+    <h3>Login</h3>
+    <input id="loginName" placeholder="Enter your name">
+    <input type="password" placeholder="Enter password">
+    <button class="btn" onclick="submitLogin()">Continue</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+let currentCategory='All';
+
+/* 🎯 Geometry Box only in ALL */
+const products=[
+{name:'Notebooks',price:80,cat:'Books',img:'images/notebook.jpg'},
+{name:'Practical Books',price:120,cat:'Books',img:'images/practical-notebook.jpg'},
+{name:'Geometry Box',price:180,cat:'AllOnly',img:'images/geometry-box.jpg'},
+{name:'Pens (Pack)',price:120,cat:'Writing',img:'images/pen-set.jpg'},
+{name:'Pencil Box',price:100,cat:'Writing',img:'images/pencil-box.jpg'},
+{name:'Colour Papers',price:90,cat:'Art',img:'images/colour-papers.jpg'},
+{name:'Sketch Pens',price:110,cat:'Art',img:'images/sketchpens.jpg'}
+];
+
+const container=document.getElementById('productContainer');
+
+function renderProducts(list){
+  container.innerHTML='';
+  list.forEach((p,i)=>{
+    container.innerHTML+=`<div class="card">
+      <img src="${p.img}" alt="${p.name}">
+      <div class="card-content">
+        <h3>${p.name}</h3>
+        <p class="price">₹${p.price}</p>
+        <button class="btn" onclick="addToCart(${i})">Add to Cart</button>
+      </div>
+    </div>`;
+  });
+}
+
+function getFilteredProducts(){
+  const searchVal=document.getElementById('searchInput').value.toLowerCase();
+  return products.filter(p=>{
+    if(currentCategory==='All') return p.name.toLowerCase().includes(searchVal);
+    if(p.cat==='AllOnly') return false;
+    return (p.cat===currentCategory)&&p.name.toLowerCase().includes(searchVal);
+  });
+}
+
+function filterProducts(){renderProducts(getFilteredProducts());}
+
+function setCategory(cat,btn){
+  currentCategory=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(getFilteredProducts());
+}
+
+/* 🔐 LOGIN (not saved) */
+function loginUser(){
+  document.getElementById('loginModal').classList.add('show');
+}
+
+function submitLogin(){
+  const name=document.getElementById('loginName').value.trim();
+  if(!name) return alert('Enter your name');
+  document.getElementById('loginBtn').innerText=name;
+  document.getElementById('loginModal').classList.remove('show');
+}
+
+// close login on outside click
+(function(){
+  const modal=document.getElementById('loginModal');
+  modal.addEventListener('click',function(e){
+    if(e.target===modal) modal.classList.remove('show');
+  });
+})();
+
+/* 🌙 THEME TOGGLE */
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+}
+
+// CART
+let cart={};
+
+function addToCart(index){
+  const id=products[index].name;
+  if(!cart[id]) cart[id]={...products[index],qty:0};
+  cart[id].qty++;
+
+  const box=document.getElementById('cartBox');
+  box.classList.remove('bump'); void box.offsetWidth; box.classList.add('bump');
+
+  updateCart();
+}
+
+function changeQty(id,delta){
+  cart[id].qty+=delta;
+  if(cart[id].qty<=0) delete cart[id];
+  updateCart();
+}
+
+function toggleCart(){
+  document.getElementById('cartPanel').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+/* ✅ WORKING CHECKOUT STEP */
+function checkout(){
+  if(Object.keys(cart).length===0) return alert('Cart is empty');
+  document.getElementById('checkoutModal').classList.add('show');
+}
+
+function placeOrder(){
+  alert('Order placed successfully! 🎉');
+  cart={};
+  updateCart();
+  document.getElementById('checkoutModal').classList.remove('show');
+}
+
+function updateCart(){
+  renderCart();
+  const count=Object.values(cart).reduce((a,b)=>a+b.qty,0);
+  document.getElementById('cartCount').innerText=count;
+}
+
+function renderCart(){
+  const list=document.getElementById('cartItems');
+  const totalEl=document.getElementById('cartTotal');
+  list.innerHTML='';
+  let total=0;
+
+  Object.values(cart).forEach(item=>{
+    const sub=item.price*item.qty; total+=sub;
+    list.innerHTML+=`<div class="cart-item">
+      <div>${item.name}</div>
+      <div class="qty-box">
+        <button onclick="changeQty('${item.name}',-1)">−</button>
+        <span>${item.qty}</span>
+        <button onclick="changeQty('${item.name}',1)">+</button>
+        <span>₹${sub}</span>
+      </div>
+    </div>`;
+  });
+
+  totalEl.innerText='₹'+total;
+}
+
+// ===== INIT TESTS =====
+// basic sanity tests to ensure key functions exist
+console.assert(typeof loginUser==='function','loginUser should exist');
+console.assert(typeof submitLogin==='function','submitLogin should exist');
+console.assert(typeof checkout==='function','checkout should exist');
+
+// initial render
+renderProducts(products);
+</script>
+
+</body>
+</html>
