@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Library Book Catalogue</title>
+
+<style>
+body{
+font-family: Arial;
+background-color:#f2f2f2;
+text-align:center;
+margin:0;
+}
+
+h1{
+background:#2c3e50;
+color:white;
+padding:15px;
+margin:0;
+}
+
+.container{
+margin:30px auto;
+width:80%;
+background:white;
+padding:20px;
+box-shadow:0px 0px 10px gray;
+}
+
+input{
+padding:8px;
+margin:5px;
+width:150px;
+}
+
+button{
+padding:10px 15px;
+margin:5px;
+border:none;
+color:white;
+cursor:pointer;
+font-weight:bold;
+}
+
+.add{background:#27ae60;}
+.remove{background:#e74c3c;}
+.search{background:#2980b9;}
+.show{background:#8e44ad;}
+.clear{background:#f39c12;}
+
+table{
+width:100%;
+margin-top:20px;
+border-collapse:collapse;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:10px;
+}
+
+th{
+background:#34495e;
+color:white;
+}
+
+.highlight{
+background:yellow;
+font-weight:bold;
+}
+
+footer{
+margin-top:30px;
+background:#2c3e50;
+color:white;
+padding:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>Library Book Catalogue</h1>
+
+<div class="container">
+
+<h3 id="counter">Books in Catalogue: 5 / 20</h3>
+
+<input type="text" id="bookId" placeholder="Book ID">
+<input type="text" id="title" placeholder="Book Title">
+<input type="text" id="author" placeholder="Author">
+
+<br>
+
+<button class="add" onclick="addBook()">Add Book</button>
+<button class="remove" onclick="removeBook()">Remove by Title</button>
+<button class="search" onclick="searchBook()">Search by Title</button>
+<button class="show" onclick="displayBooks()">Display Books</button>
+<button class="clear" onclick="clearInputs()">Clear Inputs</button>
+
+<table id="bookTable">
+<tr>
+<th>ID</th>
+<th>Title</th>
+<th>Author</th>
+</tr>
+</table>
+
+</div>
+
+<footer>
+Library Catalogue Project | Student Project Submission
+</footer>
+
+<script>
+
+const capacity = 20;
+
+let books = [
+{ id:101, title:"C Programming", author:"Dennis Ritchie"},
+{ id:102, title:"Data Structures", author:"Mark Allen"},
+{ id:103, title:"Digital Logic", author:"Morris Mano"},
+{ id:104, title:"Computer Networks", author:"Andrew Tanenbaum"},
+{ id:105, title:"Operating Systems", author:"Galvin"}
+];
+
+function updateCounter(){
+document.getElementById("counter").innerText =
+"Books in Catalogue: " + books.length + " / " + capacity;
+}
+
+function displayBooks(){
+
+let table = document.getElementById("bookTable");
+
+table.innerHTML =
+"<tr><th>ID</th><th>Title</th><th>Author</th></tr>";
+
+books.forEach(book=>{
+let row = table.insertRow();
+row.insertCell(0).innerText = book.id;
+row.insertCell(1).innerText = book.title;
+row.insertCell(2).innerText = book.author;
+});
+
+updateCounter();
+}
+
+function addBook(){
+
+if(books.length >= capacity){
+alert("Library capacity reached! Cannot add more books.");
+return;
+}
+
+let id = document.getElementById("bookId").value.trim();
+let title = document.getElementById("title").value.trim();
+let author = document.getElementById("author").value.trim();
+
+if(id === "" || title === "" || author === ""){
+alert("Please enter Book ID, Title, and Author.");
+return;
+}
+
+books.push({id:id, title:title, author:author});
+
+alert("Book added successfully!");
+
+displayBooks();
+clearInputs();
+
+}
+
+function removeBook(){
+
+let title = document.getElementById("title").value.trim().toLowerCase();
+
+if(title === ""){
+alert("Enter the title to remove.");
+return;
+}
+
+let index = books.findIndex(book=>book.title.toLowerCase() === title);
+
+if(index !== -1){
+books.splice(index,1);
+alert("Book removed successfully!");
+}
+else{
+alert("Book not found!");
+}
+
+displayBooks();
+clearInputs();
+
+}
+
+function searchBook(){
+
+let title = document.getElementById("title").value.trim().toLowerCase();
+
+if(title === ""){
+alert("Enter a title to search.");
+return;
+}
+
+displayBooks();
+
+let table = document.getElementById("bookTable");
+
+for(let i=1;i<table.rows.length;i++){
+
+let cell = table.rows[i].cells[1].innerText.toLowerCase();
+
+if(cell === title){
+table.rows[i].classList.add("highlight");
+}
+
+}
+
+}
+
+function clearInputs(){
+
+document.getElementById("bookId").value="";
+document.getElementById("title").value="";
+document.getElementById("author").value="";
+
+}
+
+displayBooks();
+
+</script>
+
+</body>
+</html>
